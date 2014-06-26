@@ -20,7 +20,7 @@ Fcm - A python library for flow cytometry
    heterogeneous mix of cells at single cell resolution.  This has lead flow
    cytometry to become an integral tool in immunology and biology.  Most flow
    cytometry analysis is performed in expensive proprietary software packages,
-   and few opensource tool exist for working with flow cytometry data.
+   and few opensource tools exist for working with flow cytometry data.
    In this paper we present `fcm`, an BSD licensed python library for
    traditional gating based analysis in addition to newer model based analysis
    methods.
@@ -34,27 +34,30 @@ Introduction
 
 .. background on flow
 
-Flow cytometry (FCM) has become an integral tool in immunology and biology due to the
-ability of FCM to measure cell properties at the single cell level for
-thousands to millions of cells in a high throughput manner.  In FCM,
-cells are typically labeled with monoclonal antibodies to cell surface
-or intracellular proteins. The monoclonal antibodies are conjugated to
-different fluorochromes that emit specific wavelengths of light when
-excited by lasers. These cells are then streamed single file via a
-capillary tube where they may be excited by multiple lasers. Cells
-scatter the laser light in different ways depending on their size and
-granularity, and excited fluorochromes emit light of characteristic
-wavelengths.  Scattered light is recorded in forward and side scatter detectors,
-and specific fluorescent emission light is recorded into separate
-channels.  Since each fluorescent dye is attached to specific cell markers by
-monoclonal antibodies, the intensity of emitted light is a measure of the
-number of bound antibodies of that specificity [Herzenberg2006]_ . The
-data recorded for each cell is known as an event, although events may
-sometimes also represent cell debris or clumps.
-Modern instruments can resolve about a dozen fluorescent emissions
-simultaneously and hence measure the levels of a dozen different
-markers per cell - further increase in resolution is limited by the
-spectral overlap (spillover) between fluorescent dyes.
+Flow cytometry (FCM) has become an integral tool in immunology and biology due
+to the ability of FCM to measure cell properties at the single cell level for
+thousands to millions of cells in a high throughput manner.  In FCM, cells are
+typically labeled with monoclonal antibodies, molecules that bond only to a
+specific regions of a protein.  These monoclonal antibodies are specific for
+cell surface or intracellular proteins. The monoclonal antibodies are
+conjugated to different fluorochromes that emit specific wavelengths of light
+when excited by lasers. These cells are then streamed single file via a
+capillary tube where they may be excited by multiple lasers. Cells scatter the
+laser light in different ways depending on their size and granularity, and
+excited fluorochromes emit light of characteristic wavelengths.  Scattered
+light is recorded in forward and side scatter detectors, and specific
+fluorescent emission light is recorded into separate channels.  Since each
+fluorescent dye is attached to specific cell markers by monoclonal antibodies,
+the intensity of emitted light is a measure of the number of bound antibodies
+of that specificity [Herzenberg2006]_ .  Using multiple monoclonal antibodies
+specific to different cell surface markers or intracellular proteins, different
+types of cells can be differentiated from each other.  The data recorded for
+each cell is known as an event, although events may sometimes also represent
+cell debris or clumps of cells and debris.  Modern instruments can resolve
+about a dozen fluorescent emissions simultaneously and hence measure the levels
+of a dozen different markers per cell - further increase in resolution is
+limited by the spectral overlap (spillover) between fluorescent dyes. With
+careful planning panels of seventeen colors are possible [Perfetto2004]_. 
 
 .. traditional gating based analysis and other tools
 .. ie the why of fcm
@@ -65,45 +68,51 @@ spectral overlap (spillover) between fluorescent dyes.
    :figclass: align-center
    
    Diagram of how events are recorded in a flow cytometer provided by
-   lanl.gov :label:`flow`
+   lanl.gov :label:`flow`  In this figure monoclonal antibodies specific to CD4
+   are used to identify Helper T cells.  When the labeled cells pass by the
+   laser and detector the laser causes the monoclonal antibodies flouresce.
+   This flourescent emission is then recorded, and can be used to identify
+   which cells are Helper T cells.
 
 
-Analysis of FCM data has traditionally relied on expert interpretation
-of scatter plots known as dot plots that show the scattered light or
-fluorescence intensity for each cell depicted as a point. Expert
-operators examine these two dimensional dot plots in sequence and
-manually define boundaries around cell subsets of interest in each
-projection. The regions demarcated by these boundaries are known as
-gates, and the cell subsets of interest may require multiple levels of
-gates to identify.  Much work is needed train expert operators to
-standardize gate placement and minimize variance. Maecker et al [Maecker2005]_ found
-a significant source of variability in a multi-center study was due to
-variability in gating.  New technologies have the potential to greatly
-increase the number of simultaneous markers that can be resolved
-with FCM.  Inductively coupled plasma mass spectrometry [Ornatsky2006]_ replaces the
-fluorescent dyes with stable heavy metal isotopes and fluorescent detection
-with mass spectrometry.  This eliminates the spectral overlap (spillover) from
+Analysis of FCM data has traditionally relied on expert interpretation of
+scatter plots known as dot plots that show the scattered light or fluorescence
+intensity for each cell depicted as a point. Expert operators examine these two
+dimensional dot plots in sequence and manually define boundaries around cell
+subsets of interest in each projection. The regions demarcated by these
+boundaries are known as gates, and the cell subsets of interest may require
+multiple levels of gates to identify.  Much work is needed to train expert
+operators to standardize the placement of gates and minimize the variance between
+operators. Maecker et al. [Maecker2005]_ found a significant source of
+variability in a multi-center study was due to variability in where operators
+placed gates.  New technologies have the potential to greatly increase the
+number of simultaneous markers that can be resolved with FCM.  Inductively
+coupled plasma mass spectrometry [Ornatsky2006]_ replaces the fluorescent dyes
+with stable heavy metal isotopes and fluorescent detection with mass
+spectrometry.  This eliminates the spectral overlap (spillover) from
 fluorescent dyes allowing a significantly increased number of markers to be
-resolved simultaneously.
+resolved simultaneously.  A recent study [Newell2012]_ using mass spectrometry
+based cytometry produced data sets with over 40 markers.  
 
-With the increasing number of markers that can be resolved
-simultaneously, there has been an increasing interest in automated methods of
-cell subset identification. While there is need for such tools, with the
-exception of the R BioConductor package, few open source
-packages exist for doing both traditional analysis and automated analysis.
-The majority of open source packages simply extract flow events into
-tabular/csv formats, losing all metadata and providing no additional tools for
-analysis.  `fcm` attempts to resolve this by providing methods for working
-with flow data in both gating-based and model-based methods.  
+With the increasing number of markers that can be resolved simultaneously,
+there has been an increasing interest in automated methods of cell subset
+identification. While there is need for such tools, with the exception of the R
+BioConductor [BioConductor]_ package, few open source packages exist for doing
+both traditional analysis and automated analysis.  The majority of open source
+packages simply extract flow events into tabular/csv formats, losing all
+metadata and providing no additional tools for analysis.  `fcm` attempts to
+resolve this by providing methods for working with flow data in both
+gating-based and model-based methods.  
 
 .. write project goals
 
-The goals in writing `fcm`  [fcm]_ are to provide a general-purpose python library for working with
-flow cytometry data.  Targeted uses include interactive data exploration with
-[ipython]_, building pipelines for batch data analysis, and
-development of GUI and web based applications.  In this paper we will explore
-the basics of working with flow cytometry data using `fcm` and how to use fcm
-to perform analysis using both gating and model based methods.
+The goals in writing `fcm`  [fcm]_ are to provide a general-purpose python
+library for working with flow cytometry data.  Targeted uses include
+interactive data exploration with ipython [ipython]_, building pipelines for
+batch data analysis, and development of GUI and web based applications.  In
+this paper we will explore the basics of working with flow cytometry data using
+`fcm` and how to use fcm to perform analysis using both gating and model based
+methods.
 
 Loading, compensating and transforming data
 -------------------------------------------
@@ -150,14 +159,14 @@ be used to access channels too.
 
 When processing cells and acquiring data, often the emission spectra of
 fluorescent dyes overlap with neighboring channels.  This spillover of light
-needs to be corrected in a process called compensation that attempts
-to remove the additional signal from neighboring channels.  Using a
-compensation matrix that describes the amount of spillover from each channel
-into others, `fcm` will by default apply compensation at the time of
-loading data, but this default behavior can be suppressed and
-compensation performed at a later time if necessary. The spillover or compensation
-matrix is typically found in the `FCMdata.notes.text` metadata,  and `loadFCS()` will
-default to compensating using that matrix if another is not specified.
+needs to be corrected in a process called compensation that attempts to remove
+the additional signal from neighboring channels.  Using a compensation matrix
+that describes the amount of spillover from each channel into others, `fcm`
+will by default apply compensation at the time of loading data, but this
+default behavior can be suppressed and compensation performed at a later time
+if necessary. The spillover or compensation matrix is typically found in the
+`FCMdata.notes.text` metadata,  and `loadFCS()` will default to compensating
+using that matrix if another is not specified.
 
 .. figure:: comp.png
 
@@ -283,8 +292,10 @@ process mixture model.
 `DPMixtureModel` has two methods of estimating parameters of the model for a
 given dataset, the first using Markov chain monte carlo (MCMC) and the second
 using Bayesian expectation maximization (BEM).  Sensible defaults for
-hyperparameters have been chosen that in our experience perform satisfactorily
-on all FCS data samples we have analyzed.
+hyper-parameters have been chosen that in our experience perform satisfactorily
+on all FCS data samples we have analyzed.  If they need changing,
+hyper-parameters can be changed by changing instance variables associated with
+the `DPMixtureModel` and `HDPMixtureModel` objects.
 
 .. code-block:: python
    :linenos:
@@ -366,16 +377,16 @@ Another common plot is overlay histograms, which is provided by
     import fcm.graphics as graph
     from glob import glob
     xs =[fcm.loadFCS(x) for x in glob('B6901GFJ-08_*.fcs')]
-    graph.hist(xs,3, display=True)
+    graph.hist(xs,'SSC-A', display=True)
 
 The code above will produce the histogram seen in figure :ref:`hist`
 
 .. figure:: hist.png
 
-    Overlay histogram of three samples from the EQAPOL data set. :label:`hist`
+    Overlay histogram of three samples from the EQAPOL data set, showing the Side Scatter parameter (SSC-A). :label:`hist`
 
 More examples of flow cytometry graphics can be seen in the gallery at
-http://packages.python.org/fcm/gallery.
+http://packages.python.org/fcm/gallery.html
 
 
 Conclusion and future work
@@ -390,7 +401,7 @@ Conclusion and future work
 
 Currently `fcm` is approaching its 1.0 release, providing a stable API for
 development and we feel `fcm` is ready for wider usage in the scientific community.
-Internally we use `fcm` for EDA for data sets from HIV/AIDS, caner, and
+Internally we use `fcm` for EDA for data sets from HIV/AIDS, cancer, and
 solid-organ transplantation studies.  In addition we have developed pipelines
 for batch analysis of large numbers of FCS files from the Duke Center for AIDS
 Research, External Quality Assurance Program Oversight Laboratory (EQAPOL),
@@ -436,20 +447,33 @@ References
 ----------
 .. [fcm] Frelinger J, Richards A, Chan C, http://code.google.com/p/py-fcm/
 
-.. [Herzenberg2006] Herzenberg LA, Tung J et al (2006),
+.. [Herzenberg2006] Herzenberg LA, Tung J et al. (2006),
                 *Interpreting flow cytometry data: a guide for the perplexed*,
                 Nat Immunol 7(7):681-685 
-.. [Maecker2005] Maecker HT, Frey T et al (2007),
+
+.. [Perfetto2004] Perfetto, Stephen P., Pratip K. Chattopadhyay, and Mario Roederer (2004),
+                *Seventeen-colour flow cytometry: unravelling the immune system*,
+                Nature Reviews Immunology 4.8 (2004): 648-655.
+
+.. [Maecker2005] Maecker HT, Frey T et al. (2007),
                 *Standardization of cytokine flow cytometry assays*,
                 BMC Immunol 6:13
 
-.. [Ornatsky2006] Ornatsky O, Baranov VI et al (2006),
+.. [Ornatsky2006] Ornatsky O, Baranov VI et al. (2006),
                 *Multiple cellular antigent detection by ICP-MS*,
                 J Immunol Methods 308(1-2):68-76
 
+.. [Newell2012] Newell, Evan W. et al. (2012),
+                *Cytometry by Time-of-Flight Shows Combinatorial Cytokine Expression and Virus-Specific Cell Niches within a Continuum of CD8+ T Cell Phenotypes*,
+                Immunity , Volume 36 , Issue 1 , 142 - 152
+                
+.. [Bioconductor] R. Gentleman, V. J. Carey, et al. (2004),
+                *Bioconductor: Open software development for computational biology and bioinformatics*,
+                Genome Biology, Vol. 5, R80
 
-.. [ipython] Pérez F, Granger BE, IPython: A System for
-                Interactive Scientific Computing, Computing in Science and
+
+.. [ipython] Pérez F, Granger BE, *IPython: A System for
+                Interactive Scientific Computing*, Computing in Science and
                 Engineering, vol. 9, no. 3, pp. 21-29, May/June 2007,
                 doi:10.1109/MCSE.2007.53. URL: http://ipython.org
 
