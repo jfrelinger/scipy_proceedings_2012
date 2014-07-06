@@ -296,7 +296,7 @@ mixture model are values that govern the prior distributions.  Similar prior
 distributions to those selected here were used in [Cron2013]_ and [Richards2014]_
 and experience suggests these are appropriate for a wide variety of
 cytokine panels.  Furthermore, examples of model parameterization can be found
-in the FCM documentation examples section [[link]].   If they need changing,
+in the FCM documentation examples section http://pythonhosted.org//fcm/advanced.html#clustering.   If they need changing,
 hyper-parameters can be changed by changing instance variables associated with
 the `DPMixtureModel` or `HDPMixtureModel` objects.
 
