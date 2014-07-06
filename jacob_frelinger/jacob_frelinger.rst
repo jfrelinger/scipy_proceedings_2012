@@ -17,7 +17,7 @@ Fcm - A python library for flow cytometry
 .. class:: abstract
 
    Flow cytometry has the ability to measure multiple parameters of a
-   heterogeneous mix of cells at single cell resolution.  This has lead flow
+   heterogeneous mix of cells at single cell resolution.  This has led flow
    cytometry to become an integral tool in immunology and biology.  Most flow
    cytometry analysis is performed in expensive proprietary software packages,
    and few opensource tools exist for working with flow cytometry data.
@@ -37,8 +37,8 @@ Introduction
 Flow cytometry (FCM) has become an integral tool in immunology and biology due
 to the ability of FCM to measure cell properties at the single cell level for
 thousands to millions of cells in a high throughput manner.  In FCM, cells are
-typically labeled with monoclonal antibodies, molecules that bond only to a
-specific regions of a protein.  These monoclonal antibodies are specific for
+typically labeled with monoclonal antibodies, molecules that bind only to a
+specific region of a protein.  These monoclonal antibodies are specific for
 cell surface or intracellular proteins. The monoclonal antibodies are
 conjugated to different fluorochromes that emit specific wavelengths of light
 when excited by lasers. These cells are then streamed single file via a
@@ -57,7 +57,7 @@ cell debris or clumps of cells and debris.  Modern instruments can resolve
 about a dozen fluorescent emissions simultaneously and hence measure the levels
 of a dozen different markers per cell - further increase in resolution is
 limited by the spectral overlap (spillover) between fluorescent dyes. With
-careful planning panels of seventeen colors are possible [Perfetto2004]_. 
+careful planning panels of seventeen colors are possible [Perfetto2004]_.
 
 .. traditional gating based analysis and other tools
 .. ie the why of fcm
@@ -66,12 +66,12 @@ careful planning panels of seventeen colors are possible [Perfetto2004]_.
    :scale: 50%
    :align: center
    :figclass: align-center
-   
+
    Diagram of how events are recorded in a flow cytometer provided by
    lanl.gov :label:`flow`  In this figure monoclonal antibodies specific to CD4
    are used to identify Helper T cells.  When the labeled cells pass by the
-   laser and detector the laser causes the monoclonal antibodies flouresce.
-   This flourescent emission is then recorded, and can be used to identify
+   laser and detector the laser causes the monoclonal antibodies fluoresce.
+   This fluorescent emission is then recorded, and can be used to identify
    which cells are Helper T cells.
 
 
@@ -92,7 +92,7 @@ with stable heavy metal isotopes and fluorescent detection with mass
 spectrometry.  This eliminates the spectral overlap (spillover) from
 fluorescent dyes allowing a significantly increased number of markers to be
 resolved simultaneously.  A recent study [Newell2012]_ using mass spectrometry
-based cytometry produced data sets with over 40 markers.  
+based cytometry produced data sets with over 40 markers.
 
 With the increasing number of markers that can be resolved simultaneously,
 there has been an increasing interest in automated methods of cell subset
@@ -102,7 +102,7 @@ both traditional analysis and automated analysis.  The majority of open source
 packages simply extract flow events into tabular/csv formats, losing all
 metadata and providing no additional tools for analysis.  `fcm` attempts to
 resolve this by providing methods for working with flow data in both
-gating-based and model-based methods.  
+gating-based and model-based methods.
 
 .. write project goals
 
@@ -143,7 +143,7 @@ In addition to traditional numpy array indexing, the text names of channels can
 be used to access channels too.
 
 .. code-block:: python
-        
+
         In [1]: import numpy as np
 
         In [2]: import fcm
@@ -152,13 +152,13 @@ be used to access channels too.
 
         In [4]: x.channels[7]
         Out[4]: 'AViD'
-        
+
         In [5]: np.all(x[:,7] == x[:,'AViD'])
         Out[5]: True
-        
+
 
 When processing cells and acquiring data, often the emission spectra of
-fluorescent dyes overlap with neighboring channels.  This spillover of light
+fluorescent dyes overlaps with neighboring channels.  This spillover of light
 needs to be corrected in a process called compensation that attempts to remove
 the additional signal from neighboring channels.  Using a compensation matrix
 that describes the amount of spillover from each channel into others, `fcm`
@@ -211,7 +211,7 @@ In addition to traditional gates, `fcm` provides additional gate like filters,
 `DropChannel`, to remove unwanted columns from a view, and `Subsample`, that
 use a python slice objects to filter events.  `FCMdata` objects `gate()` method can be
 used to apply gate objects in successive manner as it returns the updated
-`FCMdata` object allowing chaining of `gate()` calls, like so: 
+`FCMdata` object allowing chaining of `gate()` calls, like so:
 
 .. code-block:: python
 
@@ -225,8 +225,8 @@ which is equivalent to the following three lines of code:
         FCMdata.gate(g2)
         FCMdata.gate(g3)
 
-In `fcm`, gating `FCMdata` object does not produce new `FCMdata` objects, but
-rather each `FCMdata` object maintains a tree of each gated populations.
+In `fcm`, gating an `FCMdata` object does not produce a new `FCMdata` object, but
+rather each `FCMdata` object maintains a tree of the gated populations.
 Moving between nodes of the tree, accomplished by the `FCMdata.visit()`
 method, selects which events are retured on array lookup, using `numpy`'s efficient
 indexing to generate views.  This allows `FCMdata` objects to contain an entire
@@ -243,7 +243,7 @@ analyzing flow data.  Model based analysis is an approach to automate and
 increase reproducibility in the analysis of flow data by the use of statistical
 models fitted to the data.  With the appropriate multivariate statistical
 models, data fitting can be naturally performed on the full dimensionality,
-allowing analysis to scale well with the increasing number of parameters in
+allowing analysis to scale with the increasing number of parameters in
 flow cytometry. Mixture models are one such model based method.  Mixture models
 are often chosen due to their ability to use multiple simpler distributions
 added together to describe a much more complex distribution as seen in figure
@@ -264,7 +264,7 @@ simplest method being k-means classification, and more advanced methods based
 on the use of mixtures of Gaussians for data fitting.  The general procedure
 for fitting a data set to a statistical model consists of creating a
 `FCMmodel` object containing hyper-parameters, followed by calling its `fit`
-method on a collection of (or just one) `FCMdata` objects to generate 
+method on a collection of (or just one) `FCMdata` objects to generate
 `ModelResult` objects. Each `ModelResult` object holds the estimated parameters of
 the statistical model -- a `KMeans` object representing the centroid locations
 in a k-means model, or a `DPMixture` object representing the estimated
@@ -287,15 +287,20 @@ fit data from the [dpmix]_ package, which is capable of using [gpustats]_ to
 utilize GPU cards for efficient estimation of mixture parameters.  The two
 models are `DPMixtureModel` and `HDPMixtureModel`, describing a truncated
 Dirichlet process mixture model, and a hierarchical truncated Dirichlet
-process mixture model.  
+process mixture model.
 
 `DPMixtureModel` has two methods of estimating parameters of the model for a
 given dataset, the first using Markov chain monte carlo (MCMC) and the second
-using Bayesian expectation maximization (BEM).  Sensible defaults for
-hyper-parameters have been chosen that in our experience perform satisfactorily
-on all FCS data samples we have analyzed.  If they need changing,
+using Bayesian expectation maximization (BEM).  The hyperparameters for the 
+mixture model are values that govern the prior distributions.  Similar prior 
+distributions to those selected here were used in [Cron2013]_ and [Richards2014]_
+and experience suggests these are appropriate for a wide variety of
+cytokine panels.  Furthermore, examples of model parameterization can be found
+in the FCM documentation examples section [[link]].   If they need changing,
 hyper-parameters can be changed by changing instance variables associated with
-the `DPMixtureModel` and `HDPMixtureModel` objects.
+the `DPMixtureModel` or `HDPMixtureModel` objects.
+
+The hyperparameters for the mixture model are values that govern the prior distributions.  Similar prior distributions to those selected here were used in [cite PlosComp paper and Comp Immuno Methods paper etc] and experience suggests these are appropriate for a wide variety of cytokine panels.  Furthermore, examples of model parameterization can be found in the FCM documentation examples section [[link]]. 
 
 .. code-block:: python
    :linenos:
@@ -311,21 +316,21 @@ the `DPMixtureModel` and `HDPMixtureModel` objects.
    # 100 iterations
    dpmodel = stats.DPMixtureModel(10, niter=100,
        type='BEM')
-   
+
    # estimate parameters printing every 10 iterations
    results = dpmodel.fit(data,verbose=10)
-   
+
    #assign data to components
    c = results.classify(data)
-   
+
    # plot data coloring by label
    pylab.scatter(data[:,0], data[:,1], c=c,
        s=1, edgecolor='none')
 
    pylab.xlabel(data.channels[0])
    pylab.ylabel(data.channels[1])
-   
-   
+
+
 The above code labels each event by color to the cluster it belongs to as seen in
 figure :ref:`bem`
 
@@ -339,7 +344,7 @@ hierarchical model that fits all datasets such that component means and
 covariance are common to all fitted samples but the weights of components are
 specific for each sample.  Since `HDPMixtureModel` estimates multiple datasets
 simultaneously, a list of `DPMixture` objects is returned corresponding to
-each of the `FCMdata` objects passed to `HDPMixureMode.fit()`.  
+each of the `FCMdata` objects passed to `HDPMixureMode.fit()`.
 
 Visualization
 -------------
@@ -348,7 +353,7 @@ By using packages like [matplotlib]_ it becomes easy to recreate the typical
 plots flow cytometry analysts are used to seeing.  Convenience functions for
 several common plot types have been included in the `fcm.graphics` sub-package.
 The common pseudocolor dotplot is handled by the function
-`fcm.graphics.pseudocolor()` 
+`fcm.graphics.pseudocolor()`
 
 
 .. code-block:: python
@@ -401,6 +406,8 @@ Conclusion and future work
 
 Currently `fcm` is approaching its 1.0 release, providing a stable API for
 development and we feel `fcm` is ready for wider usage in the scientific community.
+Further examples on on how to use `fcm` can be found in the documentation at
+http://packages.python.org/fcm/ .
 Internally we use `fcm` for EDA for data sets from HIV/AIDS, cancer, and
 solid-organ transplantation studies.  In addition we have developed pipelines
 for batch analysis of large numbers of FCS files from the Duke Center for AIDS
@@ -421,7 +428,7 @@ analyzing the images generated.  These technologies will necessitate improved
 tools to analyze data generated by these newer cytometers.  Our hope is that
 `fcm` can meet these needs and continue to grow to address these needs, with
 specific goals of developing tools to facilitate cross sample comparison and
-time series of flow data.  
+time series of flow data.
 
 The next generation of the FCS file standard, Analytical Cytometry
 Standard,  has been proposed, using NetCDF as the format for event storage.
@@ -432,7 +439,7 @@ associated xml and image files proposed to be included in the ACS container,
 adding support for the finalized version of ACS standard should not be
 difficult.    Gating-ML, an XML format proposed with ACS for describing gates and thier
 placement, has been gaining popularity.  We are exploring how best to
-implement readers and writers for Gating-ML    
+implement readers and writers for Gating-ML.
 
 Acknowledgements
 ----------------
@@ -449,9 +456,9 @@ References
 
 .. [Herzenberg2006] Herzenberg LA, Tung J et al. (2006),
                 *Interpreting flow cytometry data: a guide for the perplexed*,
-                Nat Immunol 7(7):681-685 
+                Nat Immunol 7(7):681-685
 
-.. [Perfetto2004] Perfetto, Stephen P., Pratip K. Chattopadhyay, and Mario Roederer (2004),
+.. [Perfetto2004] Perfetto S, Chattopadhyay P, and Roederer M, (2004),
                 *Seventeen-colour flow cytometry: unravelling the immune system*,
                 Nature Reviews Immunology 4.8 (2004): 648-655.
 
@@ -463,30 +470,39 @@ References
                 *Multiple cellular antigent detection by ICP-MS*,
                 J Immunol Methods 308(1-2):68-76
 
-.. [Newell2012] Newell, Evan W. et al. (2012),
+.. [Newell2012] Newell E, et al. (2012),
                 *Cytometry by Time-of-Flight Shows Combinatorial Cytokine Expression and Virus-Specific Cell Niches within a Continuum of CD8+ T Cell Phenotypes*,
                 Immunity , Volume 36 , Issue 1 , 142 - 152
-                
-.. [Bioconductor] R. Gentleman, V. J. Carey, et al. (2004),
+
+.. [Bioconductor] Gentleman R, Carey V, et al. (2004),
                 *Bioconductor: Open software development for computational biology and bioinformatics*,
                 Genome Biology, Vol. 5, R80
 
 
-.. [ipython] Pérez F, Granger BE, *IPython: A System for
-                Interactive Scientific Computing*, Computing in Science and
-                Engineering, vol. 9, no. 3, pp. 21-29, May/June 2007,
+.. [ipython] Pérez F, Granger BE,
+                *IPython: A System for Interactive Scientific Computing*, 
+                Computing in Science and Engineering, vol. 9, no. 3, pp. 21-29, May/June 2007,
                 doi:10.1109/MCSE.2007.53. URL: http://ipython.org
 
-.. [Parks2005] Parks, D. R., Roederer, M. and Moore, W. A. (2006),
+.. [Parks2005] Parks D,, Roederer M, and Moore W, (2006),
                 *A new “Logicle” display method avoids deceptive effects
                 of logarithmic scaling for low signals and compensated data*,
                 Cytometry, 69A: 541–551. doi: 10.1002/cyto.a.20258
 
 .. [dpmix] Cron A, https://github.com/andrewcron/dpmix
 
+.. [Cron2013] Cron A, Gouttefangeas C, Frelinger J, Lin L, Singh SK, et al. (2013),
+              *Hierarchical Modeling for Rare Event Detection and Cell Subset Alignment across Flow Cytometry Samples*,
+              PLoS Comput Biol 9(7): e1003130. doi:10.1371/journal.pcbi.1003130
+
+.. [Richards2014] Richards A, Staats J, Enzor J, McKinnon K, Frelinger J, Denny T, Weinhold K, Chan C, (2014),
+              *Setting objective thresholds for rare event detection in flow cytometry*,
+              Journal of Immunological Methods, Available online 12 April 2014, ISSN 0022-1759
+              http://dx.doi.org/10.1016/j.jim.2014.04.002.
+
 .. [gpustats] Cron A and McKinney W, https://github.com/dukestats/gpustats
 
-.. [matplotlib] Hunter JD, (2007), *Matplotlib: A 2D Graphics
+.. [matplotlib] Hunter J, (2007), *Matplotlib: A 2D Graphics
                 Environment*, Computing in Science & Engineering 9, 90 (2007)
 
 .. [cytostream] Richards A, http://code.google.com/p/cytostream/
